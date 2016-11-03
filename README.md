@@ -1,4 +1,4 @@
-# ajax-table
+# ajax-table.1.0
 It is simply a jquery plugin for displaying data in a table
 
 ```javascript
