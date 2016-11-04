@@ -1,9 +1,9 @@
 # ajax-table.1.0
-It is simply a jquery plugin for displaying data in a table
+It is simply a jquery plugin for displaying data in a table. It has in built pagination functionality.
 
 ```javascript
 /* general use */
-	$('#some-selector').ajaxGridLite({
+	$('#some-selector').ajaxTable({
 		url: "some/data/url", /* json data format = {data:[],count:0}*/
 		columns: [
             {data:"Name"},
@@ -20,36 +20,36 @@ Options | Value | Descriptions
 *sn*| `true or false` | print serial no from 1 to ...
 *url*| `path/to/url`| data url
 
-###columns: [] matching header from data
+###`columns`:  matching header from data
 ```javascript
-use1:
-	columns:[
-		{data:"FName"},
-		{data:"LName"},
-	]
-use2:
-	columns:[
-		{data:"FName"},
-		{data:"LName"},
-		{mRender: function (row) {
+/* use1 */
+columns:[
+	{data:"FName"},
+	{data:"LName"},
+]
+/* use2 */
+columns:[
+	{data:"FName"},
+	{data:"LName"},
+	{mRender: function (row) {
+		//return custom html
+	}}
+]
+
+/* use3 */
+columns:[
+	{data:"FName"},
+	{
+		data:"LName",
+		attr:'style="width:100px;"' /* custom attribute to td */
+	},
+	{
+		mRender: function (row) {
 			//return custom html
-		}}
-	]
-	
-use3:
-	columns:[
-		{data:"FName"},
-		{
-			data:"LName",
-			attr:'style="width:100px;"' /* custom attribute to td */
 		},
-		{
-			mRender: function (row) {
-				//return custom html
-			},
-			attr:'cellspaging = "1" cellpadding = "1"'
-		}
-	]	
+		attr:'cellspaging = "1" cellpadding = "1"'
+	}
+]	
   ```
 *Options* | `Value` | Descriptions
 ---|---|---
