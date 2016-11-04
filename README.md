@@ -11,6 +11,9 @@ It is simply a jquery plugin for displaying data in a table. It has in built pag
 		]
 	});
 ```
+#Sample Screenshot
+![GitHub Logo](/Screenshot.png)
+
 
 ## lists of options
 
