@@ -1,6 +1,6 @@
 (function ($) {
 
-    $.fn.ajaxGridLite = function (options) {
+    $.fn.ajaxTable = function (options) {
         var _wrapper = $(this);
         var _defaults = {
             init: false,
