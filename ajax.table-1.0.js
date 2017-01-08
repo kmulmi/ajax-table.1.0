@@ -1,3 +1,4 @@
+
 (function ($) {
 
     $.fn.ajaxTable = function (options) {
@@ -19,10 +20,11 @@
             filter: false,
             previous: "&laquo;",
             next: "&raquo;",
-            loadMore: false
+            loadMore: false,
+            rowSortable: false
         };
         var _settings = $.extend({}, _defaults, options);
-        var _data = {data:[],count:0};
+        var _data = {data: [], count: 0};
         var _filterParams = "";
 
         /*some global variable*/
@@ -69,17 +71,22 @@
                     table._create();
                     pagination._init();
                 });
-                if(_settings.init) {
+
+                if (_settings.init) {
                     _settings.init = false;
                 } else {
                     table._fillData();
                 }
                 table._create();
                 pagination._init();
+
+                if (_settings.rowSortable) {
+                    table._makeRowSortable();
+                }
             },
             _create: function () {
                 var sn = _settings.offset + 1;
-                if(_settings.loadMore == false) table._clear();
+                if (_settings.loadMore == false) table._clear();
 
                 if (_data.count > 0) {
                     _data.data.forEach(function (dt) {
@@ -92,6 +99,7 @@
                             _wrapper.find('tbody').append(tempTr);
                         }
 
+
                         var tr = $("<tr/>");
                         if (_settings.sn) {
                             var td = $("<td/>");
@@ -103,13 +111,20 @@
                             if (typeof items.attr != "undefined") {
                                 td = $("<td " + items.attr + "/>")
                             }
+
                             if (typeof items.data != "undefined") {
                                 td.append(dt[items.data]);
                             } else if (typeof items.mRender != "undefined") {
                                 var customField = items.mRender.call(this, dt);
                                 td.append(customField);
                             }
-                            tr.append(td);
+
+                            if (typeof items.rowData != "undefined") {
+                                tr.attr("row-data", dt[items.rowData]);
+                            } else {
+                                tr.append(td);
+                            }
+
                         });
                         _wrapper.find('tbody').append(tr);
                     });
@@ -163,6 +178,32 @@
                     _noOfPages = Math.ceil(json.count / _settings.limit);
                     return json;
                 })();
+            },
+            _makeRowSortable: function () {
+                var previousOrder = [];
+                var previousOrderArr = _wrapper.find('tbody tr');
+                previousOrderArr.each(function () {
+                    previousOrder.push($(this).attr('row-data'));
+                });
+
+                _wrapper.find('tbody').sortable({
+                    axis: 'y',
+                    update: function (event, ui) {
+                        var latestOrder = [];
+                        var latestOrderArr = _wrapper.find('tbody tr');
+                        latestOrderArr.each(function () {
+                            latestOrder.push($(this).attr('row-data'));
+                        });
+
+                        var hash = {};
+
+                        for (var i = 0; i < previousOrder.length; i++) {
+                            if(previousOrder[i] != latestOrder[i])
+                                hash[previousOrder[i]] = latestOrder[i];
+                        }
+                        _settings.rowSortable.call(this, hash);
+                    }
+                });
             }
         };
 
@@ -175,7 +216,7 @@
                 var paginationNav = $('<nav aria-label="Page navigation" id="PageNavigation"/>');
                 var paginationUl = $('<ul class="pagination"/>');
 
-                if(_settings.loadMore == false) {
+                if (_settings.loadMore == false) {
                     paginationUl.append('<li id="ajax-grid-previous-button"><a role="button" aria-label="Previous" style="margin-right: 10px;"><span aria-hidden="true" >' + _settings.previous + '</span></a></li>');
 
                     if (_settings.goPagination) {
